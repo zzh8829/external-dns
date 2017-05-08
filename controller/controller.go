@@ -68,14 +68,17 @@ func (c *Controller) RunOnce() error {
 
 // Run runs RunOnce in a loop with a delay until stopChan receives a value.
 func (c *Controller) Run(stopChan <-chan struct{}) {
+	err := c.RunOnce()
+	if err != nil {
+		log.Fatalf("Failed to run first controller loop iteration: %v", err)
+	}
 	for {
-		err := c.RunOnce()
-		if err != nil {
-			log.Error(err)
-		}
-
 		select {
 		case <-time.After(c.Interval):
+			err := c.RunOnce()
+			if err != nil {
+				log.Error(err)
+			}
 		case <-stopChan:
 			log.Info("Terminating main controller loop")
 			return
