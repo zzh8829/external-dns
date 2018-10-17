@@ -46,17 +46,8 @@ func (df DomainFilter) Match(domain string) bool {
 	}
 
 	for _, filter := range df.filters {
-		strippedDomain := strings.TrimSuffix(domain, ".")
 
-		if filter == "" {
-			return true
-		} else if strings.HasPrefix(filter, ".") && strings.HasSuffix(strippedDomain, filter) {
-			return true
-		} else if strings.Count(strippedDomain, ".") == strings.Count(filter, ".") {
-			if strippedDomain == filter {
-				return true
-			}
-		} else if strings.HasSuffix(strippedDomain, "."+filter) {
+		if strings.HasSuffix(strings.TrimSuffix(domain, "."), filter) {
 			return true
 		}
 	}
